@@ -1,4 +1,8 @@
 #include <ESP8266WiFi.h>
+#include <string>
+#include <iostream>
+
+#define NUMBER_OF_LEDS 1024
 
 const char* host_text = "192.168.5.1"; // TCP host (RPI)
 byte host[] = { 192, 168, 5, 1 }; // TCP host (RPI)
@@ -56,22 +60,8 @@ void loop ()
   }
   else
   {
-    
+    send_signal();
   }
-
-
-
-  // Read all the lines of the reply from server and print them to Serial
-  Serial.println("receiving from remote server");
-  if (client.available()) 
-  {
-    Serial.print("Message: ");
-    String c = client.readString();
-    c.trim();
-    Serial.println(c);
-    delay(1000);
-  }
-  
 }
 
 
@@ -80,16 +70,23 @@ void send_signal()
   if (command == 0) // Blank the led (off)
     digitalWrite(PIN_NUM, LOW); 
   else if (command == 1) // Set all to one color
-
+    stable_color();
   else if (command == 2) // Strobe (off and color selected)
-
+    strobe_one_color();
   else if (command == 3) // Flash between two colors
+    strobe_two_colors();
+  else if (command == 4)
+    strobe_three_colors();
+  else if (command == 5)
+    
     
 }
 
 void update_data()
 {
-  byte input = client.read();
+  int input = atoi(client.readString().c_str());
+  //PARSE INPUT INTO PARTS WITH A COMMA
+  
   int i = 0;
   while(i < 6)
   {
@@ -99,16 +96,15 @@ void update_data()
       brightness = input(int);
     else if (i == 2)
       changeSpeed = input(int);
-     else if
+     else
      {
       for (int j = 0; j < 3 ; j++)
       {
-        color[i - 3][j] = 
+        color[i - 3][j] = input; //SHOULD BE AN INT ARRY
       }
      }
-     
   }
-  input = client.read();
+
 }
 
 void send_one()
@@ -129,7 +125,7 @@ void send_zero()
 
 void stable_color()
 {
-  for(int i = 0; i < num_of_leds; i++)
+  for(int i = 0; i < NUMBER_OF_LEDS; i++)
   {
     for(int j = 0; j < 3; j++)
     {
@@ -148,6 +144,30 @@ void stable_color()
     }
   }
 }
+
+void strobe_one_color()
+{
+  return;
+}
+
+void strobe_two_colors()
+{
+  return;
+}
+
+void strobe_three_colors()
+{
+  return;
+}
+
+void fade_two_colors()
+{
+  
+}
+
+
+
+
 
 
 
